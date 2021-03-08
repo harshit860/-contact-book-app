@@ -1,0 +1,16 @@
+{
+  "name": "pbp",
+  "version": "1.0.0",
+  "description": "contact book api",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "harshit",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  }
+}
