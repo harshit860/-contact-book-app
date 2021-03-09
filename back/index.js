@@ -1,12 +1,37 @@
 const Express = require('express');
 const bodyParser = require('body-parser');
-
+const cors = require('cors');
 const app = Express();
-app.use(bodyParser.json());
-const port = 3000;
+app.use(bodyParser.json(), cors());
+const port = 4000;
 
 
-let contactBook = []
+let contactBook = [
+  {
+    name: 'harshit2',
+    email: "harshit2@gmail.com"
+  },
+  {
+    name: 'harshit3',
+    email: "harshit3@gmail.com"
+  },
+  {
+    name: 'harshit4',
+    email: "harshit4@gmail.com"
+  },
+  {
+    name: 'harshit5',
+    email: "harshit5@gmail.com"
+  },
+  {
+    name: 'harshit6',
+    email: "harshit6@gmail.com"
+  },
+  {
+    name: 'harshit7',
+    email: "harshit7@gmail.com"
+  },
+]
 // Creating User
 app.post('/createuser', (req, res) => {
   if (contactBook.find(val => val.email === req.body.email) == undefined) {
@@ -66,20 +91,20 @@ app.get('/getusers', (req, res) => {
 })
 
 // Search
-app.get('/search' , (req,res) => {
+app.get('/search', (req, res) => {
   let { page = 1, limit = 5 } = req.query;
-  let {name = null ,email = null } = req.body;
+  let { name = null, email = null } = req.body;
   page = parseInt(page)
   limit = parseInt(limit)
   let search = []
   if (name) {    // search by name if name is passed inside body
-    search = contactBook.filter(val => {                                                 
-      return name === val.name.slice(0,name.length);
+    search = contactBook.filter(val => {
+      return name === val.name.slice(0, name.length);
     })
-  } 
-  else if(email) { // search by email if email is passed inside body
-    search = contactBook.filter(val => {                                                 
-      return email === val.email.slice(0,email.length);
+  }
+  else if (email) { // search by email if email is passed inside body
+    search = contactBook.filter(val => {
+      return email === val.email.slice(0, email.length);
     })
   }
   let response = paginateMe(page, limit, search)
