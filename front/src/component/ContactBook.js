@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-import { Dialog, List, ListItem, ListItemText } from '@material-ui/core';
+import { List, ListItem, ListItemText } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ContactInfo from './ContactInfo';
+import CreateUser from './CreateUser';
 
 export default function ContactBook() {
   const [users, handleUsers] = useState([])
   const [contactModal, handleModal] = useState(false)
   const [activeUser, handleActive] = useState(null)
+  const [newUser, handleNew] = useState(false)
 
   const nameClick = (user) => {
     handleActive(user)
@@ -22,28 +25,13 @@ export default function ContactBook() {
 
     axios(config)
       .then(function (response) {
-        handleUsers(response.data.users)
+        console.log(response)
+        getUsers()
       })
       .catch(function (error) {
         console.log(error);
       });
 
-  }
-
-  const dialogFunction = () => {
-    return (
-      (activeUser) ? (
-        <Dialog onClose={() => {
-          handleModal(prev => !prev)
-        }} aria-labelledby="simple-dialog-title" open={contactModal}>
-          <div className="p-4 ">
-            <p className="text-center">Contact Info</p>
-            <p>{`Name: ${activeUser.name}`}</p>
-            <p>{`Email: ${activeUser.email}`}</p>
-          </div>
-        </Dialog>
-      ) : null
-    )
   }
 
   const getUsers = () => {
@@ -62,12 +50,22 @@ export default function ContactBook() {
       });
 
   }
-
+  console.log(newUser)
   useEffect(() => {
     getUsers()
   }, [])
   return (
     <div className="container p-2">
+      <div className="d-flex  row">
+        <div className="col-3 ">
+          <input placeholder="Search"></input>
+        </div>
+        <div className="col-4">
+          <button className="btn btn-primary" onClick={() => {
+            handleNew(prev => !prev)
+          }}>New User</button>
+        </div>
+      </div>
       <div className="col-12 ">
         <List component="nav" aria-label="main mailbox folders">
           {users.map((val, index) => {
@@ -82,7 +80,22 @@ export default function ContactBook() {
           })}
         </List>
       </div>
-      {dialogFunction()}
+
+      {(activeUser) ? (
+        <>
+          <ContactInfo
+            getUsers={getUsers}
+            handleModal={handleModal}
+            name={activeUser.name}
+            email={activeUser.email}
+            contactModal={contactModal}
+          />
+        </>) : null}
+      <CreateUser
+        newUser={newUser}
+        handleNew={handleNew}
+        getUsers={getUsers}
+      />
     </div>
   )
 }
