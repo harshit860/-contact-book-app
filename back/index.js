@@ -1,8 +1,13 @@
 const Express = require('express');
 const bodyParser = require('body-parser');
+
+
 const cors = require('cors');
 const app = Express();
 app.use(bodyParser.json(), cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
 const port = 4000;
 
 
@@ -12,12 +17,12 @@ let contactBook = [
     email: "harshit2@gmail.com"
   },
   {
-    name: 'harshit3',
-    email: "harshit3@gmail.com"
+    name: 'kamal',
+    email: "kamal23@gmail.com"
   },
   {
-    name: 'harshit4',
-    email: "harshit4@gmail.com"
+    name: 'kiran',
+    email: "kirrr4@gmail.com"
   },
   {
     name: 'harshit5',
@@ -31,11 +36,27 @@ let contactBook = [
     name: 'harshit7',
     email: "harshit7@gmail.com"
   },
+  {
+    name: 'harshit8',
+    email: "harshit8@gmail.com"
+  },
+  {
+    name: 'harshit9',
+    email: "harshit79@gmail.com"
+  },
+  {
+    name: 'harshit9',
+    email: "harshit799@gmail.com"
+  },
+  {
+    name: 'harshit732',
+    email: "harshit7344@gmail.com"
+  },
 ]
 // Creating User
 app.post('/createuser', (req, res) => {
   if (contactBook.find(val => val.email === req.body.email) == undefined) {
-    contactBook.push(req.body)
+    contactBook.unshift(req.body)
   }
   else {
     res.json({
@@ -91,9 +112,11 @@ app.get('/getusers', (req, res) => {
 })
 
 // Search
-app.get('/search', (req, res) => {
+app.post('/search', (req, res) => {
+  console.log(req)
   let { page = 1, limit = 5 } = req.query;
-  let { name = null, email = null } = req.body;
+  let { name, email } = req.body;
+  console.log(name,email)
   page = parseInt(page)
   limit = parseInt(limit)
   let search = []

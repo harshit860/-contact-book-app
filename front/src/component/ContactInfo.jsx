@@ -1,5 +1,5 @@
 import { Dialog } from '@material-ui/core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import EditIcon from '@material-ui/icons/Edit';
 import axios from 'axios';
 
@@ -24,12 +24,17 @@ export default function ContactInfo(props) {
         console.log(response)
         getUsers()
         handleModal(prev => !prev)
+        handleFlag(false)
       })
       .catch(function (error) {
         console.log(error);
       });
-
   }
+
+  useEffect(()=>{
+    handleFlag(false)
+  },[])
+  
   return (
     <div>
       <Dialog onClose={() => {

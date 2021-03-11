@@ -1,10 +1,11 @@
 import { Dialog, Snackbar } from '@material-ui/core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 
 export default function CreateUser(props) {
   const { newUser, handleNew, getUsers } = props;
 
+  const [status, handleStatus] = useState('');
   const [open, handleOpen] = useState(false)
   const [name, handleName] = useState('')
   const [email, handleEmail] = useState('')
@@ -23,13 +24,21 @@ export default function CreateUser(props) {
 
     axios(config)
       .then(function (response) {
-        handleOpen(prev => !prev)
-        getUsers()
+        if (response.data.resp.status == 'user exist') {
+          handleStatus(response.data.resp.status);
+        }
+        else if(response.data.resp.status == "user created") {
+          alert('created')
+          handleNew(prev => !prev)
+          getUsers();
+        }
+      
       })
       .catch(function (error) {
-        console.log(error);
+        alert(JSON.stringify(error))
       });
   }
+
   return (
     <div>
       <Dialog
@@ -40,9 +49,13 @@ export default function CreateUser(props) {
         aria-labelledby="simple-dialog-title"
       >
         <div className="p-4">
-
           <p className="text-center">Create User</p>
-          <form onSubmit={createuser} className="form">
+          <p className="text-danger">{status}</p>
+          <form onSubmit={(event)=>{
+           event.persist(); 
+           event.stopPropagation();
+           event.preventDefault()
+            createuser()}} className="form">
             <div className="form p-2">
               <input required onChange={(e) => handleName(e.target.value)} placeholder={'Name'} id="name" required />
             </div>
@@ -50,7 +63,7 @@ export default function CreateUser(props) {
               <input required type="email" onChange={(e) => handleEmail(e.target.value)} placeholder={'Email'} id="email" />
             </div>
             <div className="form p-2">
-              <input type="submit" value="Create User" className="btn btn-success" value="Subscribe!" />
+              <input type="submit" value="Create User" className="btn btn-success" value="Create User" />
             </div>
           </form>
         </div>
