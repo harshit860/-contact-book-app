@@ -16,6 +16,7 @@ export default function ContactBook() {
   const [nextPg, handleNextPg] = useState('')
   const [prevPg, handlePrevPg] = useState('')
   const [message,handleMessage] = useState('')
+  const [activeLimit,handleLimit] = useState('5')
 
   const debounce = (fn, delay) => {
     let timeoutId;
@@ -51,6 +52,11 @@ export default function ContactBook() {
       });
   }
 
+  const limitSet = (val) =>{
+    handleLimit(val);
+    getUsers(null,val);
+  }
+
   const search = debounce(
     (e) => {
       var data = JSON.stringify({ "email": e.target.value, "name": e.target.value });
@@ -73,7 +79,7 @@ export default function ContactBook() {
             setTimeout(()=>{
               handleMessage('')
               getUsers()
-            },1500)
+            },600)
           }
           if (response.data.next) {
             handleNext(false)
@@ -97,8 +103,9 @@ export default function ContactBook() {
         })
     }, 1000)
 
-  const getUsers = (check = null) => {
-    let url = 'http://localhost:4000/getusers'
+  const getUsers = (check = null,limit) => {
+    console.log(activeLimit)
+    let url = `http://localhost:4000/getusers${limit ? '?limit='+limit : ''}`
     if (check == 'next') {
       url = url + nextPg
     }
@@ -140,23 +147,28 @@ export default function ContactBook() {
     getUsers()
   }, [])
   return (
-    <div className="container p-2 col-12 ">
+    <div className="container p-1 col-12 ">
       <div className="d-flex row">
-        <div className="col-xl-7 col-lg-10 col-md-12 col-sm-12 row d-flex justify-content-around">
+        <div className="col-xl-7 col-lg-10 col-md-12 col-sm-12 row d-flex justify-content-around p-1">
           <input onChange={(e) => {
             e.persist()
             search(e)
-          }} className="col-8" placeholder="Search"></input>
+          }} className="col-8 border" placeholder="Search"></input>
           <button className="col-1 btn btn-primary" onClick={() => {
             handleNew(prev => !prev)
           }}>+</button>
+          <div className="row col-2 ">
+            <button onClick={() => limitSet('5')} className="col-4 btn  p-2" style={(activeLimit == '5') ? {backgroundColor:"royalblue",color:'white'} : {}}>5</button>
+            <button onClick={() => limitSet('10')} className="col-4 p-2 btn " style={(activeLimit == '10') ? {backgroundColor:"royalblue",color:'white'} : {}}>10</button>
+            <button onClick={() => limitSet('15')} className="col-4 p-2 btn " style={(activeLimit == '15') ? {backgroundColor:"royalblue",color:'white'} : {}}>15</button>
+          </div> 
         </div>
         <div className="p-2">
           <p className="text-danger">{message}</p>
         </div>
       </div>
       <div className="col-12  d-flex ">
-        <List component="nav" aria-label="main mailbox folders">
+        <List component="nav" aria-label="main mailbox folders" className="col-12">
           {users.map((val, index) => {
             return <div className="col-xl-12 col-lg-8 col-md-11 col-sm-11 p-1" key={index}>
               <ListItem button>

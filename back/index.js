@@ -7,9 +7,7 @@ const app = Express();
 app.use(bodyParser.json(), cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 const port = 4000;
-
 
 let contactBook = [
   {

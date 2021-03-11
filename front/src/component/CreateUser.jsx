@@ -28,7 +28,6 @@ export default function CreateUser(props) {
           handleStatus(response.data.resp.status);
         }
         else if(response.data.resp.status == "user created") {
-          alert('created')
           handleNew(prev => !prev)
           getUsers();
         }
